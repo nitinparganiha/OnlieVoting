@@ -46,15 +46,35 @@ public class Unsercontroller {
 	}
 
 	@RequestMapping("/login")
-	public String login(HttpServletRequest  req, HttpServletResponse resp) {
+	public String login(HttpServletRequest  req, HttpServletResponse resp, Model model) {
 		String name = req.getParameter("mail");
 		String pass = req.getParameter("pas");
 		int pas = Integer.parseInt(pass);
 		String log;
 		User ur = user.findByEmailAndPass(name, pas);
 		if (ur == null) {
-		    log= "login";
 			
+		  Admin ad=adm.findByEmailAndPass(name, pas);
+			if(ad!=null) {
+				
+				List<Candidate> al = cand.findByCandidate("candidate1");
+				List<Candidate> c2 = cand.findByCandidate("candidate2");
+				List<Candidate> c3 = cand.findByCandidate("candidate3");
+				List<Candidate> c4 = cand.findByCandidate("candidate4");
+				int c11 = al.size();
+				int c12 = c2.size();
+				int c13 = c3.size();
+				int c14 = c4.size();
+
+				model.addAttribute("Candidate1", c11);
+				model.addAttribute("Candidate2", c12);
+				model.addAttribute("Candidate3", c13);
+				model.addAttribute("Candidate4", c14);
+				log="CountVoting";
+				
+			}else {
+		    log= "login";
+			}
 		} else {
 			HttpSession h1=req.getSession();
 			h1.setAttribute("user", ur);
@@ -62,6 +82,7 @@ public class Unsercontroller {
 		}
 		return log;
 	}
+
 	
 	@RequestMapping("/vote")
 	public String voting(HttpServletRequest req, HttpServletResponse resp) {
